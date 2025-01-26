@@ -12,23 +12,47 @@ function App() {
 
     if (userChoice === computerChoice) {
       outcome = "Égalité !";
-      setScores((prevScores) => ({ ...prevScores, ties: prevScores.ties + 1 }));
+      setScores((prevScores) => {
+        const newScores = { ...prevScores, ties: prevScores.ties + 1 };
+        triggerHighlight("ties");
+        return newScores;
+      });
     } else if (
       (userChoice === "Pierre" && computerChoice === "Ciseaux") ||
       (userChoice === "Papier" && computerChoice === "Pierre") ||
       (userChoice === "Ciseaux" && computerChoice === "Papier")
     ) {
       outcome = "Vous gagnez !";
-      setScores((prevScores) => ({ ...prevScores, user: prevScores.user + 1 }));
+      setScores((prevScores) => {
+        const newScores = { ...prevScores, user: prevScores.user + 1 };
+        triggerHighlight("user");
+        return newScores;
+      });
     } else {
       outcome = "Vous perdez !";
-      setScores((prevScores) => ({
-        ...prevScores,
-        computer: prevScores.computer + 1,
-      }));
+      setScores((prevScores) => {
+        const newScores = { ...prevScores, computer: prevScores.computer + 1 };
+        triggerHighlight("computer");
+        return newScores;
+      });
     }
+    
+    const triggerHighlight = (key) => {
+      const scoreElement = document.querySelector(`.scores p.${key}`);
+      if (scoreElement) {
+        scoreElement.classList.add("animated");
+        setTimeout(() => {
+          scoreElement.classList.remove("animated");
+        }, 500);
+      }
+    };
 
     setResult(`Vous : ${userChoice} | Ordinateur : ${computerChoice} -> ${outcome}`);
+  };
+
+  const resetScores = () => {
+    setScores({ user: 0, computer: 0, ties: 0 });
+    setResult("");
   };
 
   return (
@@ -52,20 +76,15 @@ function App() {
           <h2>Résultat :</h2>
           <p>{result || "Choisissez une option pour commencer !"}</p>
         </div>
-
-        
-        <br></br>
-        <button className="reset-btn" onClick={() => setScores({ user: 0, computer: 0, ties: 0 })}>
-          🔄 Réinitialiser les Scores
-        </button>
-        
         <div className="scores">
           <h2>Tableau des Scores :</h2>
-          <p>👤 Joueur : {scores.user}</p>
-          <p>💻 Ordinateur : {scores.computer}</p>
-          <p>⚖️ Égalités : {scores.ties}</p>
+          <p className="user">👤 Joueur : {scores.user}</p>
+          <p className="computer">💻 Ordinateur : {scores.computer}</p>
+          <p className="ties">⚖️ Égalités : {scores.ties}</p>
+          <button className="reset-btn" onClick={resetScores}>
+            🔄 Réinitialiser les Scores
+          </button>
         </div>
-        
       </main>
       <footer className="footer">
         <p>💡 Que le meilleur gagne ! 💡</p>
