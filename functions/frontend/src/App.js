@@ -3,6 +3,7 @@ import "./App.css";
 
 function App() {
   const [result, setResult] = useState("");
+  const [scores, setScores] = useState({ user: 0, computer: 0, ties: 0 });
 
   const playGame = (userChoice) => {
     const choices = ["Pierre", "Papier", "Ciseaux"];
@@ -11,14 +12,20 @@ function App() {
 
     if (userChoice === computerChoice) {
       outcome = "Égalité !";
+      setScores((prevScores) => ({ ...prevScores, ties: prevScores.ties + 1 }));
     } else if (
       (userChoice === "Pierre" && computerChoice === "Ciseaux") ||
       (userChoice === "Papier" && computerChoice === "Pierre") ||
       (userChoice === "Ciseaux" && computerChoice === "Papier")
     ) {
       outcome = "Vous gagnez !";
+      setScores((prevScores) => ({ ...prevScores, user: prevScores.user + 1 }));
     } else {
       outcome = "Vous perdez !";
+      setScores((prevScores) => ({
+        ...prevScores,
+        computer: prevScores.computer + 1,
+      }));
     }
 
     setResult(`Vous : ${userChoice} | Ordinateur : ${computerChoice} -> ${outcome}`);
@@ -45,6 +52,13 @@ function App() {
           <h2>Résultat :</h2>
           <p>{result || "Choisissez une option pour commencer !"}</p>
         </div>
+        <div className="scores">
+          <h2>Tableau des Scores :</h2>
+          <p>👤 Joueur : {scores.user}</p>
+          <p>💻 Ordinateur : {scores.computer}</p>
+          <p>⚖️ Égalités : {scores.ties}</p>
+        </div>
+        
       </main>
       <footer className="footer">
         <p>💡 Que le meilleur gagne ! 💡</p>

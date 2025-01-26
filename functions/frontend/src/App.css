@@ -72,6 +72,27 @@ body {
   border-radius: 8px;
 }
 
+.scores {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.scores h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.scores p {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  color: #555;
+}
+
+
 .footer {
   margin-top: 20px;
   font-size: 0.9rem;
