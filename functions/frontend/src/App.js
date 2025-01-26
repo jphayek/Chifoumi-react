@@ -52,6 +52,13 @@ function App() {
           <h2>Résultat :</h2>
           <p>{result || "Choisissez une option pour commencer !"}</p>
         </div>
+
+        
+        <br></br>
+        <button className="reset-btn" onClick={() => setScores({ user: 0, computer: 0, ties: 0 })}>
+          🔄 Réinitialiser les Scores
+        </button>
+        
         <div className="scores">
           <h2>Tableau des Scores :</h2>
           <p>👤 Joueur : {scores.user}</p>

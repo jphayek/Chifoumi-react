@@ -72,6 +72,22 @@ body {
   border-radius: 8px;
 }
 
+.reset-btn {
+  margin-top: 10px;
+  background-color: #ff6b6b;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reset-btn:hover {
+  background-color: #e05656;
+}
+
 .scores {
   margin-top: 20px;
   padding: 15px;
