@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import "./App.css";
 
 function App() {
-  const [result, setResult] = useState("");
-
-  // Appel API vers le backend
-  useEffect(() => {
-    fetch("/api/chifoumi") // Appel API via la route backend
-      .then((res) => res.json())
-      .then((data) => setResult(data.message))
-      .catch((err) => console.error("Erreur :", err));
-  }, []);
-
   return (
-    <div>
-      <h1>Jeu de Chi Fou Mi</h1>
-      <p>Résultat : {result || "Chargement..."}</p>
+    <div className="app">
+      <h1>Chi Fou Mi</h1>
+      <div className="choices">
+        <button>🪨 Pierre</button>
+        <button>📄 Papier</button>
+        <button>✂️ Ciseaux</button>
+      </div>
+      <div className="result">
+        <h2>Résultat : </h2>
+        <p>Vous : Pierre | Ordinateur : Ciseaux</p>
+      </div>
     </div>
   );
 }
