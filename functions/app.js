@@ -11,9 +11,19 @@ require("./lib/mongo");
 const User = require("./models/user");
 const Match = require("./models/match");
 const turnValidator = require("./middlewares/turnValidator");
+const path = require("path");
 
 app.use(express.json());
 app.use(cors());
+
+// Serve les fichiers React (uniquement en production)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "frontend/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+  });
+}
 
 app.post("/login", async function (req, res) {
   try {
