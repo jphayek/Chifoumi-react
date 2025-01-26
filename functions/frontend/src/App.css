@@ -1,27 +1,77 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .app {
   text-align: center;
-  font-family: Arial, sans-serif;
+  width: 90%;
+  max-width: 600px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.header {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 15px;
+  border-radius: 10px 10px 0 0;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.main {
   padding: 20px;
 }
 
 .choices {
   margin: 20px 0;
+  display: flex;
+  justify-content: space-around;
 }
 
-button {
+.choice-btn {
+  background-color: #4c8bf5;
+  color: white;
   font-size: 18px;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 5px;
+  font-weight: bold;
+  padding: 15px 20px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-button:hover {
-  background-color: #f0f0f0;
+.choice-btn:hover {
+  background-color: #3478e5;
+  transform: scale(1.1);
 }
 
 .result {
   margin-top: 20px;
-  font-size: 20px;
+  padding: 10px;
+  font-size: 1.2rem;
+  background: #f7f7f7;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.footer {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #555;
+  background: #eee;
+  padding: 10px;
+  border-radius: 0 0 15px 15px;
 }
