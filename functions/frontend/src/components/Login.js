@@ -11,21 +11,32 @@ const Login = ({ onLogin }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = formData;
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    if (!storedUser || username !== storedUser.username || password !== storedUser.password) {
-      setError("Nom d'utilisateur ou mot de passe incorrect !");
-      return;
+  
+    try {
+      const response = await fetch("http://localhost:3002/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        alert("Connexion réussie !");
+        onLogin();
+        navigate("/matches");
+      } else {
+        setError("Nom d'utilisateur ou mot de passe incorrect !");
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      setError("Une erreur est survenue. Veuillez réessayer.");
     }
-
-    
-    localStorage.setItem("token", "loggedin");
-    alert("Connexion réussie !");
-    onLogin();
-    navigate("/game");
   };
 
   return (

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import "./App.css";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import MatchesList from './components/MatchesList';
 
 function App() {
   const [result, setResult] = useState("");
@@ -74,6 +75,7 @@ function App() {
           path="/"
           element={isLoggedIn ? <Navigate to="/game" /> : <Navigate to="/login" />}
         />
+        <Route path="/matches" element={<MatchesList />} />
         <Route
           path="/game"
           element={
