@@ -1,4 +1,5 @@
 version: "3.4"
+
 services:
   mongo:
     image: mongo
@@ -9,6 +10,22 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - db-data:/data/db
-      
+
+  backend:
+    build: .
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - MONGO_URL=mongodb://root:password@mongo:27017/chifoumi?authSource=admin
+      - NODE_ENV=dev
+      - SECRET_KEY=foo
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["node", "server.js"]
+
 volumes:
   db-data: {}
