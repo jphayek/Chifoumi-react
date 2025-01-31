@@ -13,8 +13,8 @@ RUN npm install
 # Copier le reste des fichiers du projet
 COPY . .
 
-# Exposer le port 3002
-EXPOSE 3002
+# Exposer le port du frontend
+EXPOSE 3000
 
-# Commande pour lancer le serveur
-CMD ["node", "server.js"]
+# Commande pour démarrer le frontend
+CMD ["npm", "start"]
