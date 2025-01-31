@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import MatchesList from './components/MatchesList';
+import Register from "./components/Auth/Register";
+import Login from "./components/Auth/Login";
+import MatchesList from './components/Matches/MatchesList';
 
 function App() {
   const [result, setResult] = useState("");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Matches.css';
+import "../../styles/Matches.css";
 
 function MatchesList() {
   const [matchId, setMatchId] = useState("");

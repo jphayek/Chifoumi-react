@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import "./Form.css";
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,28 +16,24 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = formData;
-  
+
     try {
       const response = await fetch("http://localhost:3002/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token);
+        login(data.token);
         alert("Connexion réussie !");
-        onLogin();
         navigate("/matches");
       } else {
         setError("Nom d'utilisateur ou mot de passe incorrect !");
       }
     } catch (error) {
-      console.error("Erreur réseau :", error);
-      setError("Une erreur est survenue. Veuillez réessayer.");
+      setError("Erreur réseau, veuillez réessayer.");
     }
   };
 
@@ -46,33 +44,15 @@ const Login = ({ onLogin }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Nom d'utilisateur</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Entrez votre nom"
-          />
+          <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} placeholder="Entrez votre nom" />
         </div>
         <div className="form-group">
           <label htmlFor="password">Mot de passe</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Entrez votre mot de passe"
-          />
+          <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} placeholder="Entrez votre mot de passe" />
         </div>
-        <button type="submit" className="form-btn">
-          Se connecter
-        </button>
+        <button type="submit" className="form-btn">Se connecter</button>
       </form>
-      <p>
-        Pas encore de compte ? <a href="/register">S'inscrire</a>
-      </p>
+      <p>Pas encore de compte ? <a href="/register">S'inscrire</a></p>
     </div>
   );
 };
