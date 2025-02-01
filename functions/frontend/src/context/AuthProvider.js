@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import AuthContext from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Token stocké :", token);
     if (token) {
       setUser({ token });
     }

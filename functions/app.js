@@ -61,88 +61,74 @@ app.post("/register", async function (req, res) {
 
 app.post("/matches", verifyJwt(), async function (req, res) {
   try {
-    let event = {};
-    if (
-      await Match.findOne({
-        "user1._id": req.user._id,
-        user2: null,
-      })
-    ) {
-      return res.status(400).json({ match: "You already have a match" });
-    }
-
-    let match = await Match.findOne({
-      "user1._id": { $ne: req.user._id },
+    const match = new Match({
+      user1: req.user,
       user2: null,
+      turns: [],
+      createdAt: new Date(),
     });
-    if (!match) {
-      match = new Match({
-        user1: req.user,
-        user2: null,
-        turns: [],
-        createdAt: new Date(),
-      });
-      event.type = "PLAYER1_JOIN";
-      event.payload = {
-        user: req.user.username,
-      };
-    } else {
-      match.user2 = req.user;
-      event.type = "PLAYER2_JOIN";
-      event.payload = {
-        user: req.user.username,
-      };
-    }
-    match = await match.save();
-    event.matchId = match._id.valueOf();
-    res.status(201).json(match);
-    NotificationCenter.notify(event);
-    if (match.user2) {
-      event = {
-        type: "NEW_TURN",
-        matchId: match._id.valueOf(),
-        payload: {
-          turnId: 1,
-        },
-      };
-      NotificationCenter.notify(event);
-    }
+
+    await match.save();
+
+    res.status(201).json({ matchId: match._id });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
+app.post("/matches/join", verifyJwt(), async function (req, res) {
+  try {
+      const { matchId } = req.body;
+      if (!matchId || matchId.length !== 24) {
+          return res.status(400).json({ error: "ID invalide" });
+      }
+
+      const match = await Match.findById(matchId);
+      if (!match) {
+          return res.status(404).json({ error: "Match introuvable" });
+      }
+
+      if (match.user2) {
+          return res.status(400).json({ error: "Ce match est déjà complet" });
+      }
+
+      if (match.user1._id === req.user._id) {
+          return res.status(400).json({ error: "Vous ne pouvez pas rejoindre votre propre partie !" });
+      }
+
+      match.user2 = {
+          _id: req.user._id,
+          username: req.user.username,
+          iat: req.user.iat,
+          exp: req.user.exp,
+      };
+
+      await match.save();
+
+      res.status(200).json({ success: true, matchId });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
 app.get("/matches", verifyJwt(), async function (req, res) {
   try {
     const { order, itemsPerPage, page, ...criteria } = req.query;
-    const match = await Match.find(
-      {
-        ...criteria,
-        $or: [{ "user1._id": req.user._id }, { "user2._id": req.user._id }],
-      },
-      null,
-      { sort: order, skip: (page - 1) * itemsPerPage, limit: itemsPerPage }
-    );
-    if (match)
-      res.json(
-        match.map((m) => {
-          m.turns = m.turns.map((turn) => {
-            if (!turn.winner) {
-              if (turn.user2 && m.user2._id !== req.user._id) {
-                turn.user2 = "?";
-              }
-              if (turn.user1 && m.user1._id !== req.user._id) {
-                turn.user1 = "?";
-              }
-            }
-            return turn;
-          });
-          return m;
-        })
-      );
+
+    const matches = await Match.find({
+      $or: [
+        { "user1._id": req.user._id },
+        { "user2._id": req.user._id },
+        { user2: null }
+      ],
+    });
+    res.json(matches);
   } catch (error) {
+    console.error("❌ Erreur lors de la récupération des matchs :", error);
     res.status(500).json(error);
   }
 });
+
 app.get("/matches/:id", verifyJwt(), async (req, res) => {
   try {
     const match = await Match.findOne({
@@ -236,6 +222,21 @@ app.get("/matches/:id/subscribe", verifyJwt(), function (request, response) {
     });
   } catch (error) {
     response.status(500).json(error);
+  }
+});
+
+app.get("/game/:matchId", verifyJwt(), async (req, res) => {
+  try {
+    const match = await Match.findOne({
+      _id: req.params.id,
+      $or: [{ "user1._id": req.user._id }, { "user2._id": req.user._id }],
+    });
+
+    if (!match) return res.status(404).json({ error: "Match non trouvé" });
+
+    res.json(match);
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
 
