@@ -3,7 +3,7 @@ import AuthContext from "./AuthContext";
 import { jwtDecode } from "jwt-decode";
 
 const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -22,13 +22,13 @@ const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = (newToken) => {
-    localStorage.setItem("token", newToken);
+    sessionStorage.setItem("token", newToken);
     setToken(newToken);
     setUser(jwtDecode(newToken));
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setToken(null);
     setUser(null);
   };

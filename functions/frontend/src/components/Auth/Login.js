@@ -26,7 +26,11 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
+
+     
+        sessionStorage.setItem("token", data.token); 
         login(data.token);
+
         alert("Connexion réussie !");
         navigate("/matches");
       } else {
@@ -44,11 +48,25 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Nom d'utilisateur</label>
-          <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} placeholder="Entrez votre nom" />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Entrez votre nom"
+          />
         </div>
         <div className="form-group">
           <label htmlFor="password">Mot de passe</label>
-          <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} placeholder="Entrez votre mot de passe" />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Entrez votre mot de passe"
+          />
         </div>
         <button type="submit" className="form-btn">Se connecter</button>
       </form>

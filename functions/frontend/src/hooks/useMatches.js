@@ -11,19 +11,18 @@ export function useMatches() {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`
         },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log("Match créé :", data.matchId);
-        
         navigate(`/game/${data.matchId}`);
-        
         return data.matchId;
       } else {
-        console.error("Erreur lors de la création du match");
+        const errorData = await response.json();
+        console.error("Erreur lors de la création du match :", errorData);
         return null;
       }
     } catch (error) {
@@ -43,7 +42,7 @@ export function useMatches() {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({ matchId }),
         });
