@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import useAuth from "../../hooks/useAuth";
 
-const socket = io("http://localhost:3002");
+const socket = io("http://localhost:3001");
 
 function MultiplayerGame() {
   const { matchId } = useParams();
-
   const { user } = useAuth();
   const [turns, setTurns] = useState([]);
   const [winner, setWinner] = useState(null);
@@ -15,7 +14,21 @@ function MultiplayerGame() {
   const [opponentMove, setOpponentMove] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
 
-  console.log("Utilisateur actuel :", user);
+  const calculateWinner = (myChoice, opponentChoice) => {
+    let winner = null;
+    if (myChoice === opponentChoice) {
+      winner = "Égalité";
+    } else if (
+      (myChoice === "rock" && opponentChoice === "scissors") ||
+      (myChoice === "scissors" && opponentChoice === "paper") ||
+      (myChoice === "paper" && opponentChoice === "rock")
+    ) {
+      winner = user.username;
+    } else {
+      winner = opponentChoice.username; // L'adversaire gagne
+    }
+    setWinner(winner);
+  };
 
   useEffect(() => {
     if (!matchId) {
@@ -23,26 +36,18 @@ function MultiplayerGame() {
       return;
     }
 
-    console.log("Tentative de connexion WebSocket avec matchId :", matchId);
     socket.emit("joinMatch", matchId);
 
-    socket.on("playerJoined", (match) => {
-      console.log("👤 Joueur connecté :", user.username);
-    });
-
-    socket.on("gameStart", ({ matchId }) => {
-      console.log("🎉 La partie commence ! MatchID :", matchId);
+    socket.on("gameStart", () => {
       setGameStarted(true);
       setIsMyTurn(true);
     });
 
     socket.on("waitingForPlayer", () => {
-      console.log("🕒 En attente d'un autre joueur...");
       setGameStarted(false);
     });
 
     socket.on("turnPlayed", (turnData) => {
-      console.log("🔄 Tour joué :", turnData);
       setTurns((prevTurns) => [...prevTurns, turnData]);
 
       if (turnData.username === user.username) {
@@ -51,21 +56,22 @@ function MultiplayerGame() {
         setIsMyTurn(true);
         setOpponentMove(turnData.choice);
       }
-    });
 
-    socket.on("gameOver", ({ match, winner }) => {
-      console.log("Partie terminée ! Gagnant :", winner);
-      setWinner(winner);
+      // Vérifier si les deux joueurs ont joué
+      if (turns.length >= 1) {
+        const opponentTurn = turns.find(turn => turn.username !== user.username);
+        if (opponentTurn) {
+          calculateWinner(turnData.choice, opponentTurn.choice);
+        }
+      }
     });
 
     return () => {
-      socket.off("playerJoined");
       socket.off("gameStart");
       socket.off("waitingForPlayer");
       socket.off("turnPlayed");
-      socket.off("gameOver");
     };
-  }, [matchId, user.username]);
+  }, [matchId, user.username, turns]);
 
   const playTurn = (choice) => {
     if (!isMyTurn) {
@@ -73,7 +79,6 @@ function MultiplayerGame() {
       return;
     }
 
-    console.log(` ${user.username} joue : ${choice}`);
     socket.emit("playTurn", matchId, { username: user.username, choice });
     setIsMyTurn(false);
   };
@@ -89,7 +94,6 @@ function MultiplayerGame() {
       ) : (
         <>
           <h2>{isMyTurn ? "🟢 C'est votre tour !" : "🔴 Attendez votre adversaire..."}</h2>
-
           <div>
             <button onClick={() => playTurn("rock")} disabled={!isMyTurn}>🪨 Pierre</button>
             <button onClick={() => playTurn("paper")} disabled={!isMyTurn}>📄 Papier</button>
