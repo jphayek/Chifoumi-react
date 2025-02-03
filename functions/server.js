@@ -2,6 +2,9 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const app = require("./app");
+const Match = require("./models/match");
+const { checkMatchWinner } = require("./lib/chifoumi");
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -29,11 +32,34 @@ io.on("connection", (socket) => {
     }
   });
   
-
-  socket.on("playTurn", (matchId, turnData) => {
-    console.log(`Tour joué dans ${matchId} :`, turnData);
-    io.to(matchId).emit("turnPlayed", turnData);
+  const Match = require("./models/match");
+  const { checkMatchWinner } = require("./lib/chifoumi");
+  
+  socket.on("playTurn", async (matchId, turnData) => {
+      console.log(`Tour joué dans ${matchId} :`, turnData);
+      io.to(matchId).emit("turnPlayed", turnData);
+  
+      try {
+          const match = await Match.findById(matchId);
+          if (!match) {
+              console.error("⚠️ Match non trouvé !");
+              return;
+          }
+  
+          match.turns.push(turnData);
+  
+          if (match.turns.length >= 6) {
+              match.winner = checkMatchWinner(match);
+              await match.save();
+              io.to(matchId).emit("gameOver", { matchId, winner: match.winner?.username || "draw" });
+          } else {
+              await match.save();
+          }
+      } catch (error) {
+          console.error("❌ Erreur lors de l'ajout du tour :", error);
+      }
   });
+  
 
   socket.on("disconnect", () => {
     console.log("Utilisateur déconnecté");
@@ -43,3 +69,5 @@ io.on("connection", (socket) => {
 server.listen(process.env.PORT || 3002, () =>
   console.log("Serveur WebSocket lancé sur le port 3002")
 );
+
+
