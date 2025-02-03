@@ -7,31 +7,52 @@ const socket = io("http://localhost:3002");
 
 function MultiplayerGame() {
   const { matchId } = useParams();
-
   const { user } = useAuth();
+
+  const [match, setMatch] = useState(null); // 🔥 Stocker le match
   const [turns, setTurns] = useState([]);
   const [winner, setWinner] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [opponentMove, setOpponentMove] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
 
-  console.log("Utilisateur actuel :", user);
+  console.log("👤 Utilisateur actuel :", user);
 
+  // 🔹 Récupération du match avant d'afficher quoi que ce soit
   useEffect(() => {
     if (!matchId) {
-      console.error("Erreur : matchId est NULL !");
+      console.error("⚠️ Erreur : matchId est NULL !");
       return;
     }
 
-    console.log("Tentative de connexion WebSocket avec matchId :", matchId);
+    console.log("🔍 Récupération du match en cours...");
+    fetch(`http://localhost:3002/matches/${matchId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🎯 Match récupéré :", data);
+        setMatch(data);
+      })
+      .catch((err) => console.error("❌ Erreur lors de la récupération du match :", err));
+  }, [matchId]);
+
+  useEffect(() => {
+    if (!matchId) return;
+
+    console.log("🔗 Connexion WebSocket avec matchId :", matchId);
     socket.emit("joinMatch", matchId);
 
-    socket.on("playerJoined", (match) => {
+    socket.on("playerJoined", () => {
       console.log("👤 Joueur connecté :", user.username);
     });
 
-    socket.on("gameStart", ({ matchId }) => {
-      console.log("🎉 La partie commence ! MatchID :", matchId);
+    socket.on("gameStart", () => {
+      console.log("🎉 La partie commence !");
       setGameStarted(true);
       setIsMyTurn(true);
     });
@@ -53,8 +74,8 @@ function MultiplayerGame() {
       }
     });
 
-    socket.on("gameOver", ({ match, winner }) => {
-      console.log("Partie terminée ! Gagnant :", winner);
+    socket.on("gameOver", ({ matchId, winner }) => {
+      console.log("🏆 Partie terminée ! Gagnant :", winner);
       setWinner(winner);
     });
 
@@ -67,19 +88,13 @@ function MultiplayerGame() {
     };
   }, [matchId, user.username]);
 
-  socket.on("gameOver", ({ matchId, winner }) => {
-    console.log("Partie terminée ! Gagnant :", winner);
-    setWinner(winner);
-  });
-
-
   const playTurn = (choice) => {
     if (!isMyTurn) {
       alert("⚠️ Ce n'est pas votre tour !");
       return;
     }
 
-    console.log(` ${user.username} joue : ${choice}`);
+    console.log(`🎮 ${user.username} joue : ${choice}`);
     socket.emit("playTurn", matchId, { username: user.username, choice });
     setIsMyTurn(false);
   };
@@ -88,8 +103,8 @@ function MultiplayerGame() {
     <div>
       <h1>Partie en cours : {matchId}</h1>
 
-      {!gameStarted ? (
-        <h2>🕒 Attente d'un autre joueur...</h2>
+      {!match ? (
+        <h2>🔍 Chargement du match...</h2> // 🔥 Afficher "Chargement" si le match n'est pas prêt
       ) : winner ? (
         <h2>🏆 Le gagnant est : {winner}</h2>
       ) : (
