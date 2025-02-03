@@ -16,26 +16,32 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = formData;
-
+  
     try {
       const response = await fetch("http://localhost:3002/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
+  
+      console.log("Réponse brute du serveur :", response);
+  
+      const data = await response.json();
+      console.log("Données renvoyées par le serveur :", data);
+  
       if (response.ok) {
-        const data = await response.json();
         login(data.token);
         alert("Inscription réussie !");
         navigate("/matches");
       } else {
-        setError("Nom d'utilisateur déjà pris !");
+        setError(data.message || "Nom d'utilisateur déjà pris !");
       }
     } catch (error) {
+      console.error("Erreur lors de la requête :", error);
       setError("Erreur réseau, veuillez réessayer.");
     }
   };
+  
 
   return (
     <div className="form-container">

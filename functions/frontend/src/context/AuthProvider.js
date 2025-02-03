@@ -22,10 +22,18 @@ const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = (newToken) => {
+    console.log("Token reçu dans login :", newToken);
+  
+    if (!newToken || typeof newToken !== "string") {
+      console.error("Erreur : le token est invalide ou undefined !");
+      return;
+    }
+  
     sessionStorage.setItem("token", newToken);
     setToken(newToken);
     setUser(jwtDecode(newToken));
   };
+  
 
   const logout = () => {
     sessionStorage.removeItem("token");
