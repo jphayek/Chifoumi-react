@@ -18,7 +18,7 @@ function MultiplayerGame() {
 
   console.log("👤 Utilisateur actuel :", user);
 
-  // 🔹 Récupération du match avant d'afficher quoi que ce soit
+  
   useEffect(() => {
     if (!matchId) {
       console.error("⚠️ Erreur : matchId est NULL !");

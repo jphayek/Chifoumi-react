@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
 const API_URL = "http://localhost:3002";
 
@@ -48,10 +49,7 @@ export function useMatches() {
         });
 
         if (response.ok) {
-            
-            //Rediriger `user2` vers la partie immédiatement
             navigate(`/game/${matchId}`);
-
             return true;
         } else {
             const errorData = await response.json();
@@ -64,5 +62,46 @@ export function useMatches() {
     }
   };
 
-  return { createMatch, joinMatch };
+  const getUserMatches = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/matches`, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+      });
+
+      if (response.ok) {
+        const allMatches = await response.json();
+        console.log("🔍 Données brutes reçues :", allMatches);
+
+        const storedUser = localStorage.getItem("user");
+        const currentUser = storedUser ? JSON.parse(storedUser).username : null;
+        console.log("✅ Utilisateur actuel :", currentUser);
+
+        if (!currentUser) {
+          console.error("❌ Aucun utilisateur trouvé, aucun match ne peut être filtré.");
+          return [];
+        }
+
+        const userMatches = allMatches.filter(match => {
+          console.log("🎯 Vérification match:", match);
+          console.log("➡️ user1:", match.user1?.username, " | user2:", match.user2?.username);
+          return (match.user1?.username === currentUser || match.user2?.username === currentUser);
+        });
+
+        console.log("✅ Matchs filtrés :", userMatches);
+        return userMatches;
+      } else {
+        console.error("❌ Erreur lors de la récupération des matchs");
+        return [];
+      }
+    } catch (error) {
+      console.error("❌ Erreur réseau lors de la récupération des matchs :", error);
+      return [];
+    }
+  }, []); 
+
+  return { createMatch, joinMatch, getUserMatches };
 }

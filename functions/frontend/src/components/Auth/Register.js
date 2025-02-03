@@ -24,12 +24,15 @@ const Register = () => {
         body: JSON.stringify({ username, password }),
       });
   
-      console.log("Réponse brute du serveur :", response);
-  
       const data = await response.json();
-      console.log("Données renvoyées par le serveur :", data);
+      console.log("Réponse complète du serveur :", data); // VÉRIFIER LE TOKEN
   
       if (response.ok) {
+        if (!data.token) {
+          console.error("🚨 Erreur : le token n'est pas présent !");
+          return;
+        }
+  
         login(data.token);
         alert("Inscription réussie !");
         navigate("/matches");
@@ -41,6 +44,7 @@ const Register = () => {
       setError("Erreur réseau, veuillez réessayer.");
     }
   };
+  
   
 
   return (
