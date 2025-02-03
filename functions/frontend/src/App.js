@@ -8,8 +8,6 @@ import MultiplayerGame from "./components/Game/MultiplayerGame";
 import useAuth from "./hooks/useAuth";
 import MatchDetails from "./components/Matches/MatchDetails";
 
-<Route path="/match/:id" element={<MatchDetails />} />
-
 
 function App() {
   const { user, logout } = useAuth();
@@ -29,6 +27,7 @@ function App() {
           <Route path="/game/:matchId" element={user ? <MultiplayerGame /> : <Navigate to="/login" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/match/:matchId" element={<MatchDetails />} />
         </Routes>
       </div>
     </Router>
