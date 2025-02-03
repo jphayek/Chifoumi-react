@@ -6,9 +6,11 @@ import Login from "./components/Auth/Login";
 import GameLobby from "./components/Game/GameLobby";
 import MultiplayerGame from "./components/Game/MultiplayerGame";
 import useAuth from "./hooks/useAuth";
+import MatchDetails from "./components/Matches/MatchDetails";
+
 
 function App() {
-  const { user, logout } = useAuth(); // Utilisation du hook d'authentification
+  const { user, logout } = useAuth();
 
   return (
     <Router>
@@ -25,6 +27,7 @@ function App() {
           <Route path="/game/:matchId" element={user ? <MultiplayerGame /> : <Navigate to="/login" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/match/:matchId" element={<MatchDetails />} />
         </Routes>
       </div>
     </Router>
