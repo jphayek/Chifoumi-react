@@ -27,17 +27,29 @@ const checkTurnPlayed = (turn) => {
 };
 
 const checkMatchWinner = (match) => {
-  const winner = match.turns.reduce(
-      (acc, turn) => {
-        acc[checkTurnWinner(turn)]++;
-        return acc;
-      },
-      {user1: 0, user2: 0, draw: 0},
-  );
-  return winner.user1 === winner.user2 ?
-    null :
-    match[winner.user1 > winner.user2 ? "user1" : "user2"];
+  if (match.turns.length < 6) return null; 
+
+  const scores = { user1: 0, user2: 0 };
+
+  for (let i = 0; i < match.turns.length; i += 2) { 
+      const result = checkTurnWinner({ 
+          user1: match.turns[i]?.choice, 
+          user2: match.turns[i + 1]?.choice 
+      });
+
+      if (result === "user1") scores.user1++;
+      if (result === "user2") scores.user2++;
+  }
+
+  if (scores.user1 === scores.user2) {
+      return "draw"; 
+  }
+
+  return scores.user1 > scores.user2 ? match.user1 : match.user2; 
 };
+
+
+
 
 const getLastTurnPlayed = (match) => {
   return match.turns.reduce((acc, turn, index) => {

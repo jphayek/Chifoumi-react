@@ -16,7 +16,6 @@ const path = require("path");
 app.use(express.json());
 app.use(cors());
 
-// Servir les fichiers React en production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "functions/frontend/build")));
 
@@ -186,17 +185,19 @@ app.post(
           },
         });
 
-        if (match.turns.length === 3) {
-          match.winner = checkMatchWinner(match);
-          await match.save();
+        if (match.turns.length >= 3) { 
+          match.winner = checkMatchWinner(match); 
+          await match.save(); 
+      
           NotificationCenter.notify({
-            type: "MATCH_ENDED",
-            matchId: match._id.valueOf(),
-            payload: {
-              winner: (match.winner && match.winner.username) || "draw",
-            },
+              type: "MATCH_ENDED",
+              matchId: match._id.valueOf(),
+              payload: {
+                  winner: match.winner ? match.winner.username : "draw",
+              },
           });
-        }
+      }
+      
       }
     } catch (error) {
       res.status(500).json(error);

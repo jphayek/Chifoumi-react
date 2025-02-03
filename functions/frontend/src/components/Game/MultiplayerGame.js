@@ -67,6 +67,12 @@ function MultiplayerGame() {
     };
   }, [matchId, user.username]);
 
+  socket.on("gameOver", ({ matchId, winner }) => {
+    console.log("Partie terminée ! Gagnant :", winner);
+    setWinner(winner);
+  });
+
+
   const playTurn = (choice) => {
     if (!isMyTurn) {
       alert("⚠️ Ce n'est pas votre tour !");
