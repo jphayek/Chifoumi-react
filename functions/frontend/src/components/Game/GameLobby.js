@@ -120,7 +120,7 @@ function GameLobby() {
         <div className="modal">
           <div className="modal-content">
             <span className="close-button" onClick={closeModal}>&times;</span>
-            <h2>Détails du Match</h2>
+            <h2>🎮 Détails du Match</h2>
             <p><strong>Joueur 1 :</strong> {selectedMatch.user1.username}</p>
             <p><strong>Joueur 2 :</strong> {selectedMatch.user2.username}</p>
             
