@@ -30,7 +30,7 @@ function MultiplayerGame() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`
       },
     })
       .then((res) => res.json())
