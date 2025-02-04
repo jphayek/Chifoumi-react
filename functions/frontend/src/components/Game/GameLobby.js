@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useMatches } from "../../hooks/useMatches";
-import "../../styles/Modal.css";
-
+import "../../styles/GameLobby.css";
 
 const API_URL = "http://localhost:3002";
 
@@ -15,7 +14,9 @@ function GameLobby() {
   useEffect(() => {
     const fetchMatches = async () => {
       const userMatches = await getUserMatches();
-      const completedMatches = userMatches.filter(match => match.user2 !== null);
+      const completedMatches = userMatches.filter(
+        (match) => match.user2 !== null
+      );
       setMatches(completedMatches);
     };
     fetchMatches();
@@ -27,7 +28,7 @@ function GameLobby() {
   const handleCreateMatch = async () => {
     const id = await createMatch();
     if (id) {
-        console.log("🚀 Redirection vers /game/" + id);
+      console.log("🚀 Redirection vers /game/" + id);
     }
   };
 
@@ -50,7 +51,7 @@ function GameLobby() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
@@ -73,24 +74,27 @@ function GameLobby() {
 
   return (
     <div className="game-lobby">
-      <h2>Créer ou Rejoindre une Partie</h2>
+      <h2 className="title">Créer ou Rejoindre une Partie</h2>
+      <h1>🕹️</h1>
 
       <div className="create-match">
         <button onClick={handleCreateMatch}>Créer une nouvelle partie</button>
       </div>
 
       <div className="join-match">
-        <input 
-          type="text" 
-          placeholder="Entrez l'ID du match" 
-          value={matchId} 
-          onChange={(e) => setMatchId(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Entrez l'ID du match"
+          value={matchId}
+          onChange={(e) => setMatchId(e.target.value)}
         />
-        <button onClick={handleJoinMatch}>Rejoindre</button>
+        <button className="rejoindre" onClick={handleJoinMatch}>
+          Rejoindre
+        </button>
       </div>
 
       <div className="match-history">
-        <h3>🕹️ Matchs joués</h3>
+        <h3>🕹️ Matchs joués 🕹️ </h3>
         {matches.length === 0 ? (
           <p>Aucun match trouvé.</p>
         ) : (
@@ -103,12 +107,22 @@ function GameLobby() {
 
               return (
                 <li key={match._id}>
-                  <p><strong>👤 Adversaire:</strong> {opponent}</p>
-                  <p><strong>🏆 Résultat:</strong> {match.winner 
-                    ? (match.winner.username === currentUser ? "✅ Victoire" : "❌ Défaite") 
-                    : "🤝 Match nul"}
-                  </p>
-                  <button onClick={() => openMatchDetails(match._id)}>Détails</button>
+                  <div className="match-info">
+                    <p>
+                      <strong>👤 Adversaire:</strong> {opponent}
+                    </p>
+                    <p>
+                      <strong>🏆 Résultat:</strong>{" "}
+                      {match.winner
+                        ? match.winner.username === currentUser
+                          ? "✅ Victoire"
+                          : "❌ Défaite"
+                        : "🤝 Match nul"}
+                    </p>
+                  </div>
+                  <button onClick={() => openMatchDetails(match._id)}>
+                    Détails
+                  </button>
                 </li>
               );
             })}
@@ -119,24 +133,38 @@ function GameLobby() {
       {isModalOpen && selectedMatch && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close-button" onClick={closeModal}>&times;</span>
+            <button className="close-button" onClick={closeModal}>
+              &times;
+            </button>
             <h2>🎮 Détails du Match</h2>
-            <p><strong>Joueur 1 :</strong> {selectedMatch.user1.username}</p>
-            <p><strong>Joueur 2 :</strong> {selectedMatch.user2.username}</p>
-            
+            <p>
+              <strong>Joueur 1 :</strong> {selectedMatch.user1.username}
+            </p>
+            <p>
+              <strong>Joueur 2 :</strong> {selectedMatch.user2.username}
+            </p>
+
             <h2>📜 Historique des Tours</h2>
             <ul>
               {selectedMatch.turns.map((turn, index) => (
                 <li key={index}>
-                  <p><strong>{turn.username} :</strong> {turn.choice}</p>
+                  <p>
+                    <strong>{turn.username} :</strong> {turn.choice}
+                  </p>
                 </li>
               ))}
             </ul>
-            
-            <h2>🏆 Gagnant : 
-              {selectedMatch.winner ? (selectedMatch.winner === "draw" ? " Les deux - Égalité" : typeof selectedMatch.winner === "string"? selectedMatch.winner : selectedMatch.winner.username): "Aucun"}
-            </h2>
 
+            <h2>
+              🏆 Gagnant :{" "}
+              {selectedMatch.winner
+                ? selectedMatch.winner === "draw"
+                  ? " Les deux - Égalité"
+                  : typeof selectedMatch.winner === "string"
+                  ? selectedMatch.winner
+                  : selectedMatch.winner.username
+                : "Aucun"}
+            </h2>
           </div>
         </div>
       )}

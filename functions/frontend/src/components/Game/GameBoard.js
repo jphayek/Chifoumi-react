@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import "../../styles/GameBoard.css";
 
 function GameBoard({ playGame }) {
   const [selected, setSelected] = useState(null);
@@ -11,7 +12,7 @@ function GameBoard({ playGame }) {
 
   return (
     <div className="game-board">
-      <h2>Choisissez votre coup</h2>
+      <h2 className="game-title">Choisissez votre coup</h2>
       <div className="choices">
         {["Pierre", "Papier", "Ciseaux"].map((choice) => (
           <motion.button
@@ -21,7 +22,7 @@ function GameBoard({ playGame }) {
             className={`choice-btn ${selected === choice ? "selected" : ""}`}
             onClick={() => handleChoice(choice)}
           >
-            {choice}
+            <span className="choice-text">{choice}</span>
           </motion.button>
         ))}
       </div>
