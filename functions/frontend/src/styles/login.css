@@ -57,7 +57,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Champs de saisie avec interactions */
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -68,12 +67,10 @@ body {
   transition: border-color 0.3s ease;
 }
 
-/* Effet au survol */
 .input-wrapper:hover {
   border-color: #ff6161;
 }
 
-/* Effet lorsqu'un champ est sélectionné (focus) */
 .input-wrapper input:focus {
   border-color: #ffa500;
   outline: none;
@@ -98,7 +95,6 @@ body {
   color: #aaa;
 }
 
-/* Bouton avec interactions */
 .form-btn {
   width: 100%;
   padding: 0.8rem;
@@ -112,13 +108,11 @@ body {
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
-/* Effet au survol du bouton */
 .form-btn:hover {
   background: linear-gradient(90deg, #ff6161, #ff8c42);
   transform: translateY(-2px);
 }
 
-/* Effet lorsqu'on clique sur le bouton */
 .form-btn:active {
   background: linear-gradient(90deg, #ff6161, #ffa500);
   transform: translateY(1px);
