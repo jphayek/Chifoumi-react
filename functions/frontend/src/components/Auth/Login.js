@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import "../../styles/Form.css";
+import "../../styles/login.css";
+import { FaUser, FaLock } from "react-icons/fa";
 
 const Login = () => {
   const { login } = useAuth();
@@ -27,8 +28,7 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
 
-     
-        sessionStorage.setItem("token", data.token); 
+        sessionStorage.setItem("token", data.token);
         login(data.token);
 
         alert("Connexion réussie !");
@@ -42,35 +42,55 @@ const Login = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2>Se connecter</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Nom d'utilisateur</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Entrez votre nom"
-          />
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <div className="logo-circle">
+            <img
+              src="/src/assets/trophy-icon.png"
+              alt=""
+              className=""
+            />
+          </div>
+          <h1 className="login-title">Bienvenue au Chifoumi</h1>
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Mot de passe</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Entrez votre mot de passe"
-          />
-        </div>
-        <button type="submit" className="form-btn">Se connecter</button>
-      </form>
-      <p>Pas encore de compte ? <a href="/register">S'inscrire</a></p>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaUser className="input-icon" />
+              <input
+                type="text"
+                id="username"
+                name="username"
+                className="form-input"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Utilisateur"
+                required
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="input-wrapper">
+              <FaLock className="input-icon" />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="form-input"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Mot de passe"
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" className="form-btn">Connexion</button>
+          <p className="register-link">
+            Pas encore inscrit ? <a href="/register">Créer un compte</a>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
