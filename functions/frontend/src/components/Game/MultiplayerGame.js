@@ -103,7 +103,7 @@ function MultiplayerGame() {
               onClick={() => playTurn("rock")}
               disabled={!isMyTurn}
             >
-              🪨 Pierre
+              ✊ Pierre
             </button>
             <button
               className={`choice-btn ${!isMyTurn && "disabled"}`}

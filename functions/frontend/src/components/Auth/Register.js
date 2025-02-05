@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import "../../styles/Register.css";
+import "../../styles/register.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
 const Register = () => {

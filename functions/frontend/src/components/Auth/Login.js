@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import "../../styles/Login.css";
+import "../../styles/login.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
 const Login = () => {
