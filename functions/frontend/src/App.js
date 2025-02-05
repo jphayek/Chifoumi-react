@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
@@ -8,19 +8,33 @@ import MultiplayerGame from "./components/Game/MultiplayerGame";
 import useAuth from "./hooks/useAuth";
 import MatchDetails from "./components/Matches/MatchDetails";
 
+function LayoutWithLogout({ children }) {
+  const { logout } = useAuth();
+  const location = useLocation();
 
-function App() {
-  const { user, logout } = useAuth();
+  const showLogoutButton = location.pathname.startsWith("/matches") || location.pathname.startsWith("/game");
 
   return (
-    <Router>
-      <div className="app-container">
-        {user && (
+    <div className="app-container">
+      {children}
+      {showLogoutButton && (
+        <div className="logout-container">
           <button className="logout-btn" onClick={logout}>
             🚪 Déconnexion
           </button>
-        )}
+        </div>
+      )}
+    </div>
+  );
+}
 
+
+function App() {
+  const { user } = useAuth();
+
+  return (
+    <Router>
+      <LayoutWithLogout>
         <Routes>
           <Route path="/" element={user ? <Navigate to="/matches" /> : <Navigate to="/login" />} />
           <Route path="/matches" element={user ? <GameLobby /> : <Navigate to="/login" />} />
@@ -29,7 +43,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/match/:matchId" element={<MatchDetails />} />
         </Routes>
-      </div>
+      </LayoutWithLogout>
     </Router>
   );
 }

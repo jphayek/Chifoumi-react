@@ -171,3 +171,36 @@ body {
   padding: 10px;
   border-radius: 0 0 15px 15px;
 }
+
+.logout-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #ffa573, #ff867a); 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.8rem; 
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; 
+  width: 220px; 
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #ff867a, #ffa573); 
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(1px);
+}
+
