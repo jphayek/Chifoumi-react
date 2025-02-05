@@ -75,7 +75,8 @@ function MultiplayerGame() {
   };
 
   const handleBackToLobby = () => {
-    navigate("/game-lobby"); 
+    console.log("🚀 Redirection vers /matches");
+    navigate("/matches");
   };
 
   return (
@@ -89,9 +90,6 @@ function MultiplayerGame() {
       ) : winner ? (
         <div className="winner-section">
           <h2 className="winner">🏆 Le gagnant est : {winner}</h2>
-          <button className="back-to-lobby" onClick={handleBackToLobby}>
-            Retour au lobby
-          </button>
         </div>
       ) : (
         <>
@@ -125,16 +123,20 @@ function MultiplayerGame() {
 
           <div className="game-info">
             <h2>Tours joués :</h2>
-            <ul>
-              {turns.map((turn, index) => (
-                <li key={index}>
-                  {turn.choice === "rock" && "🪨 "}
-                  {turn.choice === "paper" && "📄 "}
-                  {turn.choice === "scissors" && "✂️ "}
-                  {turn.username} a choisi {turn.choice}
-                </li>
-              ))}
-            </ul>
+            {turns.length === 0 ? ( // Vérification si aucun tour n'a été joué
+              <p className="no-turns-message">⚠️ Vous n'avez pas encore commencé à jouer !</p>
+            ) : (
+              <ul>
+                {turns.map((turn, index) => (
+                  <li key={index}>
+                    {turn.choice === "rock" && "🪨 "}
+                    {turn.choice === "paper" && "📄 "}
+                    {turn.choice === "scissors" && "✂️ "}
+                    {turn.username} a choisi {turn.choice}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="opponent-move">
@@ -146,6 +148,10 @@ function MultiplayerGame() {
           </div>
         </>
       )}
+
+      <button className="back-to-lobby" onClick={handleBackToLobby}>
+        Retour au lobby
+      </button>
     </div>
   );
 }
