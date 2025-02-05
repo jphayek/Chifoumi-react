@@ -61,7 +61,7 @@ function MultiplayerGame() {
       socket.off("gameStart");
       socket.off("waitingForPlayer");
       socket.off("turnPlayed");
-      socket.off("gameOver");
+      socket.off("gameOver"); 
     };
   }, [matchId, user.username]);
 
