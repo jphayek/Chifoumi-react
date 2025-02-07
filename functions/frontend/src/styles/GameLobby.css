@@ -9,16 +9,16 @@ body {
 }
 
 .game-lobby {
-  max-width: 1000px;
-  width: 95%;
-  margin: auto;
+  max-width: 900px; 
+  width: 100%; 
   background: #ffffff;
   border-radius: 24px;
-  padding: 3rem;
+  padding: 2rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
   overflow: hidden;
 }
+
 
 .title {
   font-size: 2rem;
