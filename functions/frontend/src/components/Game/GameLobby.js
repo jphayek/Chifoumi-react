@@ -20,7 +20,7 @@ function GameLobby() {
       setMatches(completedMatches);
     };
     fetchMatches();
-  }, []);
+  }, [getUserMatches]);
 
   const storedUser = localStorage.getItem("user");
   const currentUser = storedUser ? JSON.parse(storedUser).username : null;

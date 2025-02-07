@@ -1,5 +1,5 @@
 # Utiliser une image Node.js comme base
-FROM node:18
+FROM node:14
 
 # Définir le dossier de travail dans le conteneur
 WORKDIR /app
