@@ -28,7 +28,7 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
 
-        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
         login(data.token);
 
         alert("Connexion réussie !");

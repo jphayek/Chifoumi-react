@@ -12,7 +12,7 @@ export function useMatches() {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         },
       });
   
@@ -43,7 +43,7 @@ export function useMatches() {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({ matchId }),
         });
