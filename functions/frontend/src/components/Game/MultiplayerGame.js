@@ -12,10 +12,10 @@ function MultiplayerGame() {
   const { user } = useAuth();
 
   const [match, setMatch] = useState(null);
-  const [turns, setTurns] = useState([]);
+  const [turns, setTurns] = useState([]); 
+  const [currentRound, setCurrentRound] = useState([]); 
   const [winner, setWinner] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
-  const [opponentMove, setOpponentMove] = useState(null);
 
   useEffect(() => {
     if (!matchId) {
@@ -42,18 +42,21 @@ function MultiplayerGame() {
 
     socket.emit("joinMatch", matchId);
 
-    socket.on("playerJoined", () => console.log("👤 Joueur connecté :", user.username));
+    socket.on("playerJoined", () =>
+      console.log("👤 Joueur connecté :", user.username)
+    );
     socket.on("gameStart", () => {
       setIsMyTurn(true);
     });
     socket.on("waitingForPlayer", () => setIsMyTurn(false));
     socket.on("turnPlayed", (turnData) => {
-      setTurns((prevTurns) => [...prevTurns, turnData]);
+      setCurrentRound((prevRound) => [...prevRound, turnData]);
+
       if (turnData.username !== user.username) {
-        setIsMyTurn(true);
-        setOpponentMove(turnData.choice);
+        setIsMyTurn(true); 
       }
     });
+
     socket.on("gameOver", ({ winner }) => setWinner(winner));
 
     return () => {
@@ -61,9 +64,16 @@ function MultiplayerGame() {
       socket.off("gameStart");
       socket.off("waitingForPlayer");
       socket.off("turnPlayed");
-      socket.off("gameOver"); 
+      socket.off("gameOver");
     };
   }, [matchId, user.username]);
+
+  useEffect(() => {
+    if (currentRound.length === 2) {
+      setTurns((prevTurns) => [...prevTurns, currentRound]); 
+      setTimeout(() => setCurrentRound([]), 2000); 
+    }
+  }, [currentRound]);
 
   const playTurn = (choice) => {
     if (!isMyTurn) {
@@ -89,7 +99,9 @@ function MultiplayerGame() {
         <h2 className="loading">🔍 Chargement du match...</h2>
       ) : winner ? (
         <div className="winner-section">
-          <h2 className="winner">🏆 Le gagnant est : {winner}</h2>
+          <h2 className="winner">
+            🏆 Le gagnant est : {winner === "draw" ? "Égalité" : winner}
+          </h2>
         </div>
       ) : (
         <>
@@ -122,28 +134,30 @@ function MultiplayerGame() {
           </div>
 
           <div className="game-info">
-            <h2>Tours joués :</h2>
-            {turns.length === 0 ? ( // Vérification si aucun tour n'a été joué
-              <p className="no-turns-message">⚠️ Vous n'avez pas encore commencé à jouer !</p>
+            <h2>Historique des manches :</h2>
+            {turns.length === 0 ? (
+              <p className="no-turns-message">⚠️ Aucune manche terminée !</p>
             ) : (
               <ul>
-                {turns.map((turn, index) => (
+                {turns.map((round, index) => (
                   <li key={index}>
-                    {turn.choice === "rock" && "🪨 "}
-                    {turn.choice === "paper" && "📄 "}
-                    {turn.choice === "scissors" && "✂️ "}
-                    {turn.username} a choisi {turn.choice}
+                    {round.map((turn) => (
+                      <p key={turn.username}>
+                        {turn.choice === "rock" && " 🪨 "}
+                        {turn.choice === "paper" && " 📄 "}
+                        {turn.choice === "scissors" && " ✂️ "}
+                        {turn.username} a choisi {turn.choice}
+                      </p>
+                    ))}
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className="opponent-move">
-            {opponentMove && (
-              <p>
-                <span className="opponent-icon">🔍</span> Humm qui va gagner !
-              </p>
+          <div >
+            {currentRound.length === 1 && (
+              <p className="current-round">🔒 {currentRound[0].username} a joué ... 🤫</p>
             )}
           </div>
         </>
