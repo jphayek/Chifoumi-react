@@ -33,13 +33,14 @@ body {
 
 .app {
   text-align: center;
-  width: 100%;
-  max-width: 600px;
+  width: 100%; 
+  max-width: 1000px;
   background: white;
   border-radius: 15px;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
+
 
 .header {
   background-color: #ff6b6b;
@@ -135,6 +136,32 @@ body {
   color: #555;
 }
 
+.logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn:hover {
+  background-color: #e03e3e;
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.logout-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+
 
 .footer {
   margin-top: 20px;
@@ -144,3 +171,36 @@ body {
   padding: 10px;
   border-radius: 0 0 15px 15px;
 }
+
+.logout-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #ffa573, #ff867a); 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.8rem; 
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; 
+  width: 220px; 
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #ff867a, #ffa573); 
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(1px);
+}
+
